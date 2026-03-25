@@ -24,7 +24,7 @@ export class UserMongoRepository implements IUserRepository {
     
     async findByEmail(email: String): Promise<UserEntity | null> {
         const doc = await this.model
-            .findOne(email)
+            .findOne({ email })
             .select('+passwordHash')
             .lean()
             .exec();
