@@ -1,4 +1,4 @@
-import { RepoEntity } from "../domain/repo.entity";
+import { RepoEntity } from "../../repo/domain/repo.entity";
 import { RepoPersistence } from "./repo.schema";
 
 
