@@ -5,7 +5,7 @@ import { IngestionModule } from './ingestion/ingestion.module';
 @Module({
   imports: [
     // mi manca il nome del db guys quando arriva va aggiornato
-    MongooseModule.forRoot('mongodb://localhost:27017/nomedb'),
+    MongooseModule.forRoot(process.env.MONGO_URI!),
     IngestionModule,
   ],
 })
