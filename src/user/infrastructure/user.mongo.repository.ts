@@ -32,7 +32,7 @@ export class UserMongoRepository implements IUserRepository {
     }
     
     async save(user: UserEntity): Promise<UserEntity> {
-        const created = await this.model.create(UserMapper.toPresistence(user));
+        const created = await this.model.create(UserMapper.toPersistence(user));
         return UserMapper.toDomain(created.toObject());
     }
 
