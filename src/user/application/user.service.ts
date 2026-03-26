@@ -5,6 +5,7 @@ import type { IUserRepository } from "./ports/user.repository.interface";
 import { USER_REPOSITORY } from "./ports/user.repository.interface";
 import * as bcrypt from 'bcrypt';
 import { ConflictException, UnauthorizedException } from "@nestjs/common";
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class UserService {
@@ -22,7 +23,7 @@ export class UserService {
         const passwordHash = await bcrypt.hash(data.password, 10);
 
         const user = new UserEntity(
-            crypto.randomUUID(),
+            randomUUID(),
             data.email,
             passwordHash
         );
