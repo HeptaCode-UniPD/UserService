@@ -9,7 +9,7 @@ export class RepoPersistence {
     _id!: string;
 
     @Prop({required: true})
-    idUtente!: string;
+    idUtente!: string[];
 
     @Prop({required: true, unique: true})
     url!: string;
