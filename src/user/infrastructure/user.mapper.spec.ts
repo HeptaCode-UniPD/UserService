@@ -25,7 +25,7 @@ describe('UserMapper', () => {
         it('dovrebbe mappare correttamente UserEntity → UserPersistence', () => {
             const entity = new UserEntity('123', 'test@test.com', 'hashedpassword');
 
-            const persistence = UserMapper.toPresistence(entity);
+            const persistence = UserMapper.toPersistence(entity);
 
             expect(persistence._id).toBe('123');
             expect(persistence.email).toBe('test@test.com');

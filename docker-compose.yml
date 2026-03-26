@@ -8,6 +8,15 @@ services:
       MONGO_URI: mongodb://mongo:27017/test-db
     command: npm test
 
+  app-e2e:
+    build: .
+    container_name: user-service-e2e
+    depends_on:
+      - mongo
+    environment:
+      MONGO_URI: mongodb://mongo:27017/test-e2e-db
+    command: npm run test:e2e
+
   mongo:
     image: mongo:6
     container_name: mongo-test

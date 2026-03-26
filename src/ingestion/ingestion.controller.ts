@@ -1,4 +1,4 @@
-import { Controller, Post, Body } from "@nestjs/common";
+import { Controller, Post, Body, HttpCode } from "@nestjs/common";
 import { UserService } from "../user/application/user.service";
 import { UserDataDTO } from "./dto/user-data.dto";
 import { ValidatedUserDataDTO } from "./dto/validated-user-data.dto";
@@ -14,6 +14,7 @@ export class IngestionController {
     }
 
     @Post('login')
+    @HttpCode(200)
     async login(@Body() body: UserDataDTO): Promise<void> {
         const validated = this.validate(body);
         await this.userService.login(validated);
