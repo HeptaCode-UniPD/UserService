@@ -5,6 +5,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { RepoDocument, RepoPersistence } from "./repo.schema";
 import { RepoMapper } from "./repo.mapper";
 import { Model } from "mongoose";
+import { NotFoundException } from "@nestjs/common";
 
 @Injectable()
 export class RepoMongoRepository implements IRepoRepository {
@@ -20,7 +21,7 @@ export class RepoMongoRepository implements IRepoRepository {
 
     async findByUserId(userId: string): Promise<RepoEntity[]> {
         const doc = await this.model
-            .find({userId})
+            .find({idUtente: userId})
             .sort({createdAt: -1})
             .limit(100)
             .lean()
@@ -28,9 +29,9 @@ export class RepoMongoRepository implements IRepoRepository {
         return doc.map((d) => RepoMapper.toDomain(d as RepoPersistence));
     }
 
-    async findByUrl(userId: string, repoUrl: string): Promise<RepoEntity | null> {
+    async findByUrl(repoUrl: string): Promise<RepoEntity | null> {
         const doc = await this.model
-            .findOne({userId, repoUrl})
+            .findOne({url: repoUrl})
             .lean()
             .exec();
             return doc ? RepoMapper.toDomain(doc as RepoPersistence) : null;
@@ -40,6 +41,34 @@ export class RepoMongoRepository implements IRepoRepository {
         const created = await this.model.create(RepoMapper.toPersistence(repo));
 
         return RepoMapper.toDomain(created.toObject());
+    }
+
+    async findByUrlAndUser(userId: string, repoUrl: string): Promise<RepoEntity | null> {
+    const doc = await this.model
+        .findOne({ url: repoUrl, idUtente: userId })
+        .lean()
+        .exec();
+    return doc ? RepoMapper.toDomain(doc as RepoPersistence) : null;
+    }
+
+    async delete(id: string): Promise<boolean> {
+        const result = await this.model
+            .findByIdAndDelete(id)
+            .exec();
+        return result !== null;
+    }
+
+    async addUser(repoId: string, idUtente: string): Promise<RepoEntity> {
+        const doc = await this.model
+            .findByIdAndUpdate(
+                repoId,
+                { $push: { idUtente: idUtente } },
+                { new: true }
+            )
+            .lean()
+            .exec();
+        if (!doc) throw new NotFoundException("Repository non trovato");
+        return RepoMapper.toDomain(doc as RepoPersistence);
     }
     
 }

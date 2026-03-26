@@ -1,11 +1,18 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { IngestionController } from './ingestion.controller';
 import { UserService } from '../user/application/user.service';
+import { RepoService } from '../repo/application/repo.service';
 import { UserEntity } from '../user/domain/user.entity';
+import { RepoEntity } from '../repo/domain/repo.entity';
 
 const mockUserService = {
     register: jest.fn(),
     login: jest.fn(),
+};
+
+const mockRepoService = {
+    addRepo: jest.fn(),
+    deleteRepo: jest.fn(),
 };
 
 describe('IngestionController', () => {
@@ -18,6 +25,10 @@ describe('IngestionController', () => {
                 {
                     provide: UserService,
                     useValue: mockUserService,
+                },
+                {
+                    provide: RepoService,
+                    useValue: mockRepoService,
                 }
             ],
         }).compile();
@@ -49,6 +60,34 @@ describe('IngestionController', () => {
 
             expect(mockUserService.login).toHaveBeenCalledWith(
                 expect.objectContaining({ email: dto.email })
+            );
+        });
+    });
+
+    describe('addRepo', () => {
+        it('dovrebbe chiamare repoService.addRepo con i dati corretti', async () => {
+            const dto = { idUtente: 'user1', url: 'https://github.com/owner/repo' };
+            mockRepoService.addRepo.mockResolvedValue(
+                new RepoEntity('1', ['user1'], dto.url, 's3://bucket/1')
+            );
+
+            await controller.addRepo(dto);
+
+            expect(mockRepoService.addRepo).toHaveBeenCalledWith(
+                expect.objectContaining({ idUtente: dto.idUtente, url: dto.url })
+            );
+        });
+    });
+
+    describe('deleteRepo', () => {
+        it('dovrebbe chiamare repoService.deleteRepo con i dati corretti', async () => {
+            const dto = { idUtente: 'user1', url: 'https://github.com/owner/repo' };
+            mockRepoService.deleteRepo.mockResolvedValue(true);
+
+            await controller.deleteRepo(dto);
+
+            expect(mockRepoService.deleteRepo).toHaveBeenCalledWith(
+                expect.objectContaining({ idUtente: dto.idUtente, url: dto.url })
             );
         });
     });
