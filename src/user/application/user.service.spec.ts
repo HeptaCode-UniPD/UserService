@@ -2,6 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from './user.service';
 import { USER_REPOSITORY } from './ports/user.repository.interface';
 import { ConflictException, UnauthorizedException } from '@nestjs/common';
+import { UserEntity } from '../domain/user.entity';
+import * as bcrypt from 'bcrypt';
 
 const mockUserRepository = {
     existsByEmail: jest.fn(),
@@ -46,6 +48,21 @@ describe('UserService', () => {
             expect(mockUserRepository.save).toHaveBeenCalled();
             expect(result).toBeDefined();
         });
+
+        it('dovrebbe hashare la password prima di salvarla', async () => {
+            mockUserRepository.existsByEmail.mockResolvedValue(false);
+            mockUserRepository.save.mockResolvedValue({
+                id: '1',
+                email: 'test@test.com',
+                passwordHash: 'hashedpassword'
+            });
+
+            await service.register({ email: 'test@test.com', password: '12345678' });
+
+            const savedUser = mockUserRepository.save.mock.calls[0][0] as UserEntity;
+            expect(savedUser.passwordHash).not.toBe('12345678'); // non in chiaro
+            expect(savedUser.passwordHash).toMatch(/^\$2b\$/);   // formato bcrypt
+        });
     });
 
     describe('login', () => {
@@ -63,6 +80,19 @@ describe('UserService', () => {
 
             await expect(service.login({ email: 'test@test.com', password: 'passwordsbagliata' }))
                 .rejects.toThrow(UnauthorizedException);
+        });
+
+        it('dovrebbe restituire UserEntity se credenziali corrette', async () => {
+            const hash = await bcrypt.hash('12345678', 10);
+            mockUserRepository.findByEmail.mockResolvedValue({
+                id: '1',
+                email: 'test@test.com',
+                passwordHash: hash
+            });
+
+            const result = await service.login({ email: 'test@test.com', password: '12345678' });
+            expect(result).toBeDefined();
+            expect(result.email).toBe('test@test.com');
         });
     });
 });
