@@ -2,10 +2,12 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { AppModule } from '../src/app.module';
-import * as mongoose from 'mongoose';
+import { getConnectionToken } from '@nestjs/mongoose';
+import { Connection } from 'mongoose';
 
 describe('Auth (e2e)', () => {
     let app: INestApplication;
+    let mongoConnection: Connection;
 
     beforeAll(async () => {
         const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -14,13 +16,17 @@ describe('Auth (e2e)', () => {
 
         app = moduleFixture.createNestApplication();
         await app.init();
-    });
 
-    afterAll(async () => {
-        const collections = mongoose.connection.collections;
+        mongoConnection = moduleFixture.get<Connection>(getConnectionToken());
+
+        // Pulisce il DB prima di ogni run
+        const collections = mongoConnection.collections;
         for (const key in collections) {
             await collections[key].deleteMany({});
         }
+    });
+
+    afterAll(async () => {
         await app.close();
     });
 
