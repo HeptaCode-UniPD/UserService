@@ -24,9 +24,10 @@ export class IngestionController {
 
     @Post('auth/login')
     @HttpCode(200)
-    async login(@Body() body: UserDataDTO): Promise<void> {
+    async login(@Body() body: UserDataDTO) {
         const validated = this.validateUser(body);
-        await this.userService.login(validated);
+        const result = await this.userService.login(validated);
+        return {userId: result.id};
     }
 
     @Get('repos')
@@ -37,9 +38,10 @@ export class IngestionController {
     }
 
     @Post('repo')
-    async addRepo(@Body() body: SingleRepoDataDTO): Promise<void> {
+    async addRepo(@Body() body: SingleRepoDataDTO): Promise<boolean> {
         const validated = this.validateRepo(body);
         await this.repoService.addRepo(validated);
+        return true;
     }
 
     @Delete('repo')
