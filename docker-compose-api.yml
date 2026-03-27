@@ -1,0 +1,17 @@
+services:
+  api:
+    build: .
+    container_name: user-service
+    depends_on:
+      - mongo
+    environment:
+      MONGO_URI: mongodb://mongo:27017/dev-db
+    ports:
+      - "3000:3000"
+    command: npm run start:dev
+
+  mongo:
+    image: mongo:6
+    container_name: mongo-test
+    ports:
+      - "27017:27017"
