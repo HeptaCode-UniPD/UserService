@@ -20,8 +20,7 @@ export class UserService {
             throw new ConflictException("User already exists");        
         }
 
-        const passwordHash: string = await bcrypt.hash(data.password, 10) as string;
-
+        const passwordHash = (await (bcrypt as any).hash(data.password, 10)) as string;
         const user = new UserEntity(
             randomUUID(),
             data.email,
@@ -36,7 +35,7 @@ export class UserService {
             throw new UnauthorizedException("Invalid credentials");
         }
 
-        const isValid: boolean = await bcrypt.compare(data.password, user.passwordHash) as boolean;
+        const isValid = (await (bcrypt as any).compare(data.password, user.passwordHash)) as boolean;
         if (!isValid) throw new UnauthorizedException("Invalid credentials");
 
         return user;

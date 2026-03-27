@@ -79,7 +79,7 @@ describe('UserService - login', () => {
     });
 
     it('dovrebbe restituire UserEntity se credenziali corrette', async () => {
-        const hash: string = await bcrypt.hash('12345678', 10);
+        const hash = (await (bcrypt as any).hash('12345678', 10)) as string;
         mockUserRepository.findByEmail.mockResolvedValue({
             id: '1',
             email: 'test@test.com',

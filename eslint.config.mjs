@@ -29,6 +29,10 @@ export default tseslint.config(
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-floating-promises': 'warn',
       '@typescript-eslint/no-unsafe-argument': 'warn',
+      // aggiunte a causa di problematiche con libraria bycrpt
+      '@typescript-eslint/no-unsafe-assignment': 'warn',
+      '@typescript-eslint/no-unsafe-call': 'warn',
+      '@typescript-eslint/no-unsafe-member-access': 'warn',
       "prettier/prettier": ["error", { endOfLine: "auto" }],
 
       // --- Integrazione Metriche HeptaCode ---
@@ -56,6 +60,18 @@ export default tseslint.config(
       'no-unused-vars': 'off',
       '@typescript-eslint/no-unused-vars': ['error'],
       'no-console': 'warn',
+    },
+  },
+  // Override per i file di test
+  {
+    files: ['**/*.spec.ts'],
+    rules: {
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
+      'max-lines-per-function': 'off',
+      'max-lines': 'off',
     },
   },
 );
