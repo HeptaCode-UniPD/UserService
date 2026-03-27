@@ -1,5 +1,5 @@
 {
-  "name": "UserService",
+  "name": "user-service",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -74,7 +74,30 @@
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
+    "coveragePathIgnorePatterns": [
+      "main.ts",
+      "app.module.ts",
+      "node_modules",
+      ".module.ts"
+    ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "coverageThreshold": {
+      "global": {
+        "branches": 70,
+        "functions": 70,
+        "lines": 70,
+        "statements": 70
+        }
+      }
+    },
+    "lint-staged": {
+      "**/*.{ts,js,json,mjs}": [
+        "prettier --write"
+      ],
+      "src/**/*.ts": [
+        "eslint --fix",
+        "npm test -- --passWithNoTests --bail --findRelatedTests --coverage"
+      ]
+    }
   }
-}
