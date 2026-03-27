@@ -37,10 +37,11 @@ jobs:
         env:
           MONGO_URI: mongodb://localhost:27017/test-e2e-db
 
-      - name: 4. Upload Coverage su Codecov
-        uses: codecov/codecov-action@v4
-        with:
-            token: ${{ secrets.CODECOV_TOKEN }}
+      - name: 4. SonarCloud Analysis
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+            SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: 5. Verifica Integrità Build
         run: npm run build
