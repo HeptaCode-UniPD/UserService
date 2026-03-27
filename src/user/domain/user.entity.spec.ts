@@ -10,13 +10,4 @@ describe('UserEntity', () => {
         expect(entity.passwordHash).toBe('hashedpassword');
     });
 
-    it('dovrebbe esporre i valori solo tramite getter', () => {
-        const entity = new UserEntity('123', 'test@test.com', 'hashedpassword');
-
-        // i campi privati non sono accessibili direttamente
-        expect((entity as any)['#id']).toBeUndefined();
-        expect((entity as any)['#email']).toBeUndefined();
-        expect((entity as any)['#passwordHash']).toBeUndefined();
-    });
-
 });

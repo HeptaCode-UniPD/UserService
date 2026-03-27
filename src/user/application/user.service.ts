@@ -3,7 +3,7 @@ import { UserEntity } from "../domain/user.entity";
 import { ValidatedUserDataDTO } from "../../ingestion/dto/validated-user-data.dto";
 import type { IUserRepository } from "./ports/user.repository.interface";
 import { USER_REPOSITORY } from "./ports/user.repository.interface";
-import * as bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt';
 import { ConflictException, UnauthorizedException } from "@nestjs/common";
 import { randomUUID } from 'crypto';
 
@@ -20,7 +20,7 @@ export class UserService {
             throw new ConflictException("User already exists");        
         }
 
-        const passwordHash = await bcrypt.hash(data.password, 10);
+        const passwordHash: string = await bcrypt.hash(data.password, 10) as string;
 
         const user = new UserEntity(
             randomUUID(),
@@ -36,7 +36,7 @@ export class UserService {
             throw new UnauthorizedException("Invalid credentials");
         }
 
-        const isValid = await bcrypt.compare(data.password, user.passwordHash);
+        const isValid: boolean = await bcrypt.compare(data.password, user.passwordHash) as boolean;
         if (!isValid) throw new UnauthorizedException("Invalid credentials");
 
         return user;

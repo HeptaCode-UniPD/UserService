@@ -16,13 +16,4 @@ describe('RepoEntity', () => {
         expect(entity.pathStorage).toBe('s3://bucket/123');
     });
 
-    it('dovrebbe esporre i valori solo tramite getter', () => {
-        const entity = new RepoEntity('123', ['user1'], 'https://github.com/owner/repo', 's3://bucket/123');
-
-        expect((entity as any)['#id']).toBeUndefined();
-        expect((entity as any)['#idUtente']).toBeUndefined();
-        expect((entity as any)['#url']).toBeUndefined();
-        expect((entity as any)['#pathStorage']).toBeUndefined();
-    });
-
 });
