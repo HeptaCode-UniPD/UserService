@@ -1,10 +1,13 @@
-import { Controller, Post, Delete, Body, HttpCode } from "@nestjs/common";
+import { Controller, Post, Delete, Body, HttpCode, Get } from "@nestjs/common";
 import { UserService } from "../user/application/user.service";
 import { RepoService } from "../repo/application/repo.service";
 import { UserDataDTO } from "./dto/user-data.dto";
-import { RepoDataDTO } from "./dto/repo-data.dto";
+import { SingleRepoDataDTO } from "./dto/repo-data.dto";
 import { ValidatedUserDataDTO } from "./dto/validated-user-data.dto";
 import { ValidatedRepoDataDTO } from "./dto/validated-repo-data.dto";
+import { RepoEntity } from "../repo/domain/repo.entity";
+import { GetReposDataDTO } from "./dto/get-repo-data.dto";
+import { ValidatedGetRepoDataDTO } from "./dto/validated-get-repo-data.dto";
 
 @Controller()
 export class IngestionController {
@@ -26,15 +29,22 @@ export class IngestionController {
         await this.userService.login(validated);
     }
 
+    @Get('repos')
+    async getRepos(@Body() body: GetReposDataDTO): Promise<RepoEntity[]> {
+        const validated = this.validateGetRepo(body);
+        const repos = await this.repoService.getRepos(validated);
+        return repos;
+    }
+
     @Post('repo')
-    async addRepo(@Body() body: RepoDataDTO): Promise<void> {
+    async addRepo(@Body() body: SingleRepoDataDTO): Promise<void> {
         const validated = this.validateRepo(body);
         await this.repoService.addRepo(validated);
     }
 
     @Delete('repo')
     @HttpCode(200)
-    async deleteRepo(@Body() body: RepoDataDTO): Promise<void> {
+    async deleteRepo(@Body() body: SingleRepoDataDTO): Promise<void> {
         const validated = this.validateRepo(body);
         await this.repoService.deleteRepo(validated);
     }
@@ -46,10 +56,16 @@ export class IngestionController {
         return validated;
     }
 
-    private validateRepo(data: RepoDataDTO): ValidatedRepoDataDTO {
+    private validateRepo(data: SingleRepoDataDTO): ValidatedRepoDataDTO {
         const validated = new ValidatedRepoDataDTO();
         validated.idUtente = data.idUtente;
         validated.url = data.url;
+        return validated;
+    }
+
+    private validateGetRepo(data: GetReposDataDTO): ValidatedGetRepoDataDTO {
+        const validated = new ValidatedGetRepoDataDTO();
+        validated.idUtente = data.idUtente;
         return validated;
     }
 }

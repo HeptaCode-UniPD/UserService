@@ -1,6 +1,6 @@
 import { IsString, IsUrl } from 'class-validator';
 
-export class RepoDataDTO {
+export class SingleRepoDataDTO {
     @IsString()
     idUtente!: string;
 

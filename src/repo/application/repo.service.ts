@@ -7,6 +7,7 @@ import type { GitHubServiceInterface } from "./ports/github.service.interface";
 import { GITHUB_SERVICE } from "./ports/github.service.interface";
 import { BadRequestException, NotFoundException } from "@nestjs/common";
 import { randomUUID } from 'crypto';
+import { ValidatedGetRepoDataDTO } from "../../ingestion/dto/validated-get-repo-data.dto";
 
 @Injectable()
 export class RepoService {
@@ -37,6 +38,11 @@ export class RepoService {
         );
 
         return this.repoRepository.save(repo);
+    }
+
+    async getRepos(data: ValidatedGetRepoDataDTO) : Promise<RepoEntity[]> {
+        const repos = await this.repoRepository.findByUserId(data.idUtente);
+        return repos;
     }
 
     async deleteRepo(data: ValidatedRepoDataDTO): Promise<boolean> {
