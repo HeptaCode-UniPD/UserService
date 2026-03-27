@@ -28,9 +28,10 @@ export class IngestionController {
     }
 
     @Post('repo')
-    async addRepo(@Body() body: RepoDataDTO): Promise<void> {
+    async addRepo(@Body() body: RepoDataDTO): Promise<boolean> {
         const validated = this.validateRepo(body);
         await this.repoService.addRepo(validated);
+        return true;
     }
 
     @Delete('repo')
