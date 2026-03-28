@@ -1,11 +1,12 @@
+
 services:
   api:
     build: .
     container_name: user-service
     depends_on:
       - mongo
-    environment:
-      MONGO_URI: link mongo, poi facciamo
+    env_file:
+      - .env
     ports:
       - "3000:3000"
     command: npm run start:dev
