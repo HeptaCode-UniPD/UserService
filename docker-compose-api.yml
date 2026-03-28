@@ -5,7 +5,7 @@ services:
     depends_on:
       - mongo
     environment:
-      MONGO_URI: mongodb+srv://nicolasimionato5_db_user:axxbKZgs4XhKmGHM@userservicedb.dgjf6lx.mongodb.net/dev-db
+      MONGO_URI: link mongo, poi facciamo
     ports:
       - "3000:3000"
     command: npm run start:dev
@@ -15,3 +15,5 @@ services:
     container_name: mongo-dev
     ports:
       - "27017:27017"
+    volumes:
+      - ./mongo-init:/docker-entrypoint-initdb.d
