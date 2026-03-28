@@ -1,13 +1,12 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { RepoEntity } from "../domain/repo.entity";
-import { ValidatedRepoDataDTO } from "../../ingestion/dto/validated-repo-data.dto";
+import { ValidatedSaveRepoDTO } from "../../ingestion/dto/validated-save-repo.dto";
 import type { IRepoRepository } from "./ports/repo.repository.interface";
 import { REPO_REPOSITORY } from "./ports/repo.repository.interface";
 import type { GitHubServiceInterface } from "./ports/github.service.interface";
 import { GITHUB_SERVICE } from "./ports/github.service.interface";
 import { BadRequestException, NotFoundException } from "@nestjs/common";
 import { randomUUID } from 'crypto';
-import { ValidatedGetRepoDataDTO } from "../../ingestion/dto/validated-get-repo-data.dto";
 
 @Injectable()
 export class RepoService {
@@ -18,7 +17,12 @@ export class RepoService {
         private readonly githubService: GitHubServiceInterface,
     ) {}
 
-    async addRepo(data: ValidatedRepoDataDTO): Promise<RepoEntity> {
+    async listForUser(userId: string) : Promise<RepoEntity[]> {
+        const repos = await this.repoRepository.findByUserId(userId);
+        return repos;
+    }
+
+    async addRepo(data: ValidatedSaveRepoDTO): Promise<RepoEntity> {
         const isValid = await this.githubService.validate(data.url);
         if (!isValid) {
             throw new BadRequestException("Repository GitHub non valido o non esistente");
@@ -40,11 +44,7 @@ export class RepoService {
         return this.repoRepository.save(repo);
     }
 
-    async getRepos(data: ValidatedGetRepoDataDTO) : Promise<RepoEntity[]> {
-        const repos = await this.repoRepository.findByUserId(data.idUtente);
-        return repos;
-    }
-
+    /*
     async deleteRepo(data: ValidatedRepoDataDTO): Promise<boolean> {
         const repo = await this.repoRepository.findByUrlAndUser(data.idUtente, data.url);
         if (!repo) {
@@ -52,4 +52,5 @@ export class RepoService {
         }
         return this.repoRepository.delete(repo.id);
     }
+    */
 }

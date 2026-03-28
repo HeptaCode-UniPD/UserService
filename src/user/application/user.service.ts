@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { UserEntity } from "../domain/user.entity";
 import { ValidatedUserDataDTO } from "../../ingestion/dto/validated-user-data.dto";
 import type { IUserRepository } from "./ports/user.repository.interface";
@@ -14,6 +14,7 @@ export class UserService {
         private readonly userRepository: IUserRepository
     ) {}
 
+    /*
     async register(data: ValidatedUserDataDTO): Promise<UserEntity> {
         const exists = await this.userRepository.existsByEmail(data.email);
         if (exists) {
@@ -27,6 +28,15 @@ export class UserService {
             passwordHash
         );
         return this.userRepository.save(user);
+    }
+    */
+
+    async getUser(userId: string): Promise<UserEntity> {
+        const user = await this.userRepository.findById(userId);
+
+        if(!user) { throw new NotFoundException("User not found"); }
+
+        return user;
     }
 
     async login(data: ValidatedUserDataDTO): Promise<UserEntity> {

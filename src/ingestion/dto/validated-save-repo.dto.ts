@@ -1,4 +1,4 @@
-export class ValidatedRepoDataDTO {
+export class ValidatedSaveRepoDTO {
     idUtente!: string;
     url!: string;
 }

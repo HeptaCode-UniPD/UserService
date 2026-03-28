@@ -9,6 +9,12 @@ export class UserPersistence {
     _id!: string;
 
     @Prop({required: true, unique: true})
+    nome!: string;
+
+    @Prop({required: true, unique: true})
+    cognome!: string;
+
+    @Prop({required: true, unique: true})
     email!: string;
 
     @Prop({required: true, select: false})

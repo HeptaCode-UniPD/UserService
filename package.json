@@ -25,6 +25,7 @@
     "@nestjs/core": "^11.0.1",
     "@nestjs/mongoose": "^11.0.4",
     "@nestjs/platform-express": "^11.0.1",
+    "@nestjs/swagger": "^11.2.6",
     "bcrypt": "^6.0.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
@@ -88,16 +89,16 @@
         "functions": 70,
         "lines": 70,
         "statements": 70
-        }
       }
-    },
-    "lint-staged": {
-      "**/*.{ts,js,json,mjs}": [
-        "prettier --write"
-      ],
-      "src/**/*.ts": [
-        "eslint --fix",
-        "npm test -- --passWithNoTests --bail --findRelatedTests --coverage"
-      ]
     }
+  },
+  "lint-staged": {
+    "**/*.{ts,js,json,mjs}": [
+      "prettier --write"
+    ],
+    "src/**/*.ts": [
+      "eslint --fix",
+      "npm test -- --passWithNoTests --bail --findRelatedTests --coverage"
+    ]
   }
+}
