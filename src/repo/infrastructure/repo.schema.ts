@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 
 export type RepoDocument = RepoPersistence & Document;
 
-@Schema({collection: 'users', timestamps: true, versionKey: false})
+@Schema({collection: 'repos', timestamps: true, versionKey: false})
 export class RepoPersistence {
     @Prop({required: true, unique:true})
     _id!: string;

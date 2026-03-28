@@ -4,9 +4,9 @@ import { Document } from 'mongoose';
 export type UserDocument = UserPersistence & Document;
 
 @Schema({collection: 'users', timestamps: true, versionKey: false})
-export class UserPersistence {
-    @Prop({required: true, unique:true})
-    _id!: string;
+export class UserPersistence extends Document{
+    // @Prop({required: true, unique:true})
+    // _id!: string;
 
     @Prop({required: true, unique: true})
     nome!: string;

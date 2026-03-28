@@ -5,13 +5,13 @@ services:
     depends_on:
       - mongo
     environment:
-      MONGO_URI: mongodb://mongo:27017/dev-db
+      MONGO_URI: mongodb+srv://nicolasimionato5_db_user:axxbKZgs4XhKmGHM@userservicedb.dgjf6lx.mongodb.net/dev-db
     ports:
       - "3000:3000"
     command: npm run start:dev
 
   mongo:
     image: mongo:6
-    container_name: mongo-test
+    container_name: mongo-dev
     ports:
       - "27017:27017"
