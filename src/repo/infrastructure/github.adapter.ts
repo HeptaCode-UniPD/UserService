@@ -1,14 +1,16 @@
 import { Injectable } from "@nestjs/common";
+import { GitHubServiceInterface } from "../application/ports/github.service.interface";
 
-export interface GitHubServiceInterface {
-    validate(url: string): Promise<boolean>;
+export interface GitHubRepoData {
+  name: string;
+  fullName: string;
 }
 
 @Injectable()
 export class GitHubAdapter implements GitHubServiceInterface {
     private readonly baseUrl = 'https://api.github.com/repos';
 
-    async validate(url: string): Promise<boolean> {
+    async validate(url: string): Promise<GitHubRepoData | null> {
         try {
             const { owner, repo } = this.parseUrl(url);
             const response = await fetch(`${this.baseUrl}/${owner}/${repo}`, {
@@ -17,9 +19,14 @@ export class GitHubAdapter implements GitHubServiceInterface {
                     'User-Agent': 'UserService'
                 }
             });
-            return response.status === 200;
+            if(response.status !== 200) return null;
+            
+            const data = await response.json();
+
+            return { name: data.name, fullName: data.full_name };
+
         } catch {
-            return false;
+            return null;
         }
     }
 

@@ -23,8 +23,8 @@ export class RepoService {
     }
 
     async addRepo(data: ValidatedSaveRepoDTO): Promise<RepoEntity> {
-        const isValid = await this.githubService.validate(data.url);
-        if (!isValid) {
+        const repoData = await this.githubService.validate(data.url);
+        if (!repoData) {
             throw new BadRequestException("Repository GitHub non valido o non esistente");
         }
 
@@ -38,6 +38,7 @@ export class RepoService {
             repoId,
             [data.idUtente],
             data.url,
+            repoData.name,
             `s3://your-bucket/${repoId}`
         );
 

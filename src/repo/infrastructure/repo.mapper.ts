@@ -4,7 +4,7 @@ import { RepoPersistence } from "./repo.schema";
 
 export class RepoMapper {
     static toDomain(p: RepoPersistence): RepoEntity {
-        return new RepoEntity(p._id, p.idUtente, p.url, p.pathStorage);
+        return new RepoEntity(p._id, p.idUtente, p.url, p.name, p.pathStorage);
     }
 
     static toPersistence(e: RepoEntity): RepoPersistence {
@@ -13,6 +13,7 @@ export class RepoMapper {
         p._id = e.id;
         p.idUtente = e.idUtente;
         p.url = e.url;
+        p.name = e.name;
         p.pathStorage = e.pathStorage;
 
         return p;

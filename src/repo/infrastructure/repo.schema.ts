@@ -13,6 +13,9 @@ export class RepoPersistence {
 
     @Prop({required: true, unique: true})
     url!: string;
+    
+    @Prop({required: true, unique: true})
+    name!: string;
 
     @Prop({required: false, unique: true})
     pathStorage!: string;
