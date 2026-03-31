@@ -6,13 +6,13 @@ import { UserEntity } from '../user/domain/user.entity';
 import { RepoEntity } from '../repo/domain/repo.entity';
 
 const mockUserService = {
-    register: jest.fn(),
+    getUser: jest.fn(),
     login: jest.fn(),
 };
-
 const mockRepoService = {
     addRepo: jest.fn(),
     deleteRepo: jest.fn(),
+    listForUser: jest.fn(),
 };
 
 describe('IngestionController', () => {
@@ -22,14 +22,8 @@ describe('IngestionController', () => {
         const module: TestingModule = await Test.createTestingModule({
             controllers: [IngestionController],
             providers: [
-                {
-                    provide: UserService,
-                    useValue: mockUserService,
-                },
-                {
-                    provide: RepoService,
-                    useValue: mockRepoService,
-                }
+                { provide: UserService, useValue: mockUserService },
+                { provide: RepoService, useValue: mockRepoService },
             ],
         }).compile();
 
@@ -38,29 +32,42 @@ describe('IngestionController', () => {
 
     afterEach(() => jest.clearAllMocks());
 
-    /*describe('register', () => {
-        it('dovrebbe chiamare userService.register con i dati corretti', async () => {
-            const dto = { email: 'test@test.com', password: '12345678' };
-            mockUserService.register.mockResolvedValue(new UserEntity('1', dto.email, 'hash'));
-
-            await controller.register(dto);
-
-            expect(mockUserService.register).toHaveBeenCalledWith(
-                expect.objectContaining({ email: dto.email })
-            );
-        });
-    });*/
-
     describe('login', () => {
-        it('dovrebbe chiamare userService.login con i dati corretti', async () => {
+        it('dovrebbe chiamare userService.login con i dati corretti e restituire userId e email', async () => {
             const dto = { email: 'test@test.com', password: '12345678' };
-            mockUserService.login.mockResolvedValue(new UserEntity('1', 'Nome', 'Cognome', dto.email, 'hash'));
+            const fakeUser = new UserEntity('1', 'Nome', 'Cognome', dto.email, 'hash');
+            mockUserService.login.mockResolvedValue(fakeUser);
 
-            await controller.login(dto);
+            const result = await controller.login(dto);
 
             expect(mockUserService.login).toHaveBeenCalledWith(
                 expect.objectContaining({ email: dto.email })
             );
+            expect(result).toEqual({ userId: '1', email: dto.email });
+        });
+    });
+
+    describe('profile', () => {
+        it('dovrebbe chiamare userService.getUser con il corretto userId', async () => {
+            const fakeUser = new UserEntity('1', 'Nome', 'Cognome', 'test@test.com', 'hash');
+            mockUserService.getUser.mockResolvedValue(fakeUser);
+
+            await controller.profile('1');
+
+            expect(mockUserService.getUser).toHaveBeenCalledWith('1');
+        });
+    });
+
+    describe('list', () => {
+        it('dovrebbe chiamare repoService.listForUser e restituire i repo mappati', async () => {
+            const fakeRepos = [
+                new RepoEntity('r1', ['user1'], 'https://github.com/owner/repo', 'repo-name', 's3://bucket/1'),
+            ];
+            mockRepoService.listForUser.mockResolvedValue(fakeRepos);
+
+            await controller.list('user1');
+
+            expect(mockRepoService.listForUser).toHaveBeenCalledWith('user1');
         });
     });
 
@@ -69,27 +76,25 @@ describe('IngestionController', () => {
             const dto = { idUtente: 'user1', url: 'https://github.com/owner/repo' };
             mockRepoService.addRepo.mockResolvedValue(
                 new RepoEntity('1', ['user1'], dto.url, 'repo-name', 's3://bucket/1')
-            );
+            ); 
 
-            await controller.addRepo(dto);
+            const result = await controller.addRepo(dto);
 
             expect(mockRepoService.addRepo).toHaveBeenCalledWith(
                 expect.objectContaining({ idUtente: dto.idUtente, url: dto.url })
             );
+            expect(result).toEqual({ id: '1' });
         });
     });
 
     describe('deleteRepo', () => {
-        it('dovrebbe chiamare repoService.deleteRepo con i dati corretti', async () => {
-            const dto = { idUtente: 'user1', url: 'https://github.com/owner/repo' };
-            mockRepoService.deleteRepo.mockResolvedValue(true);
+        it('dovrebbe chiamare repoService.deleteRepo con idUtente e idRepo corretti', async () => {
+            const dto = { idUtente: 'user1', idRepo: 'repo1' };
+            mockRepoService.deleteRepo.mockResolvedValue(undefined);
 
             await controller.deleteRepo(dto);
 
-            expect(mockRepoService.deleteRepo).toHaveBeenCalledWith(
-                dto.idUtente, // Qui il controller estrae la stringa dal DTO/Validated
-                dto.url
-            );
+            expect(mockRepoService.deleteRepo).toHaveBeenCalledWith(dto.idUtente, dto.idRepo);
         });
     });
 });

@@ -67,9 +67,10 @@ export class IngestionController {
 
     @Post('repo')
     @ApiOperation({ summary: 'Save a new repo entry' })
-    async addRepo(@Body() body: SaveRepoDto): Promise<void> {
+    async addRepo(@Body() body: SaveRepoDto): Promise<{ id: string }> {
         const validated = this.validateSaveRepo(body);
-        await this.repoService.addRepo(validated);
+        const repo = await this.repoService.addRepo(validated);
+        return { id: repo.id };
     }
 
     

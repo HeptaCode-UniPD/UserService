@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { IngestionModule } from './ingestion/ingestion.module';
 import { RepoModule } from './repo/repo.module';
-import * as mongoose from 'mongoose';
 
 @Module({
   imports: [
