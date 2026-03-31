@@ -21,8 +21,7 @@ export class GitHubAdapter implements GitHubServiceInterface {
             });
             if(response.status !== 200) return null;
             
-            const data = await response.json();
-
+            const data = await response.json() as { name: string; full_name: string };
             return { name: data.name, fullName: data.full_name };
 
         } catch {

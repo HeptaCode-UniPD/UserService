@@ -3,7 +3,7 @@ import { UserEntity } from "../domain/user.entity";
 import { ValidatedUserDataDTO } from "../../ingestion/dto/validated-user-data.dto";
 import type { IUserRepository } from "./ports/user.repository.interface";
 import { USER_REPOSITORY } from "./ports/user.repository.interface";
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -42,8 +42,8 @@ export class UserService {
         if (!user) {
             throw new UnauthorizedException("Invalid credentials");
         }
-
-        const isValid = (await (bcrypt as any).compare(data.password, user.passwordHash)) as boolean;
+        
+        const isValid = await bcrypt.compare(data.password, user.passwordHash);
         if (!isValid) throw new UnauthorizedException("Invalid credentials");
 
         return user;
