@@ -12,7 +12,7 @@ describe('UserMapper', () => {
                 cognome: 'test',
                 email: 'test@test.com',
                 passwordHash: 'hashedpassword'
-            };
+            }as unknown as UserPersistence;
 
             const entity = UserMapper.toDomain(persistence);
 

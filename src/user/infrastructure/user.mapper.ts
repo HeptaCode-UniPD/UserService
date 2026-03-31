@@ -6,9 +6,8 @@ export class UserMapper {
         return new UserEntity(
             (p._id as any).toString(), 
             p.nome, p.cognome, 
-            p.email, 
-            p.passwordHash);
-        }
+            p.email, p.passwordHash);
+    }
 
     static toPersistence(e: UserEntity): Partial<UserPersistence> {
         return {

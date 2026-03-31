@@ -3,6 +3,7 @@ import { UserService } from "../user/application/user.service";
 import { RepoService } from "../repo/application/repo.service";
 import { UserDataDTO } from "./dto/user-data.dto";
 import { SaveRepoDto } from "./dto/save-repo.dto";
+import { DeleteRepoDto } from './dto/delete-repo.dto';
 import { ValidatedUserDataDTO } from "./dto/validated-user-data.dto";
 import { ValidatedSaveRepoDTO } from "./dto/validated-save-repo.dto";
 import { ApiOperation, ApiQuery } from "@nestjs/swagger";
@@ -74,9 +75,8 @@ export class IngestionController {
     
     @Delete('repo')
     @HttpCode(200)
-    async deleteRepo(@Body() body: SaveRepoDto): Promise<void> {
-        const validated = this.validateRepo(body);
-        await this.repoService.deleteRepo(validated.idUtente[0], validated.url); 
+    async deleteRepo(@Body() body: DeleteRepoDto): Promise<void> {
+        await this.repoService.deleteRepo(body.idUtente, body.idRepo); 
     }
     
 
@@ -92,12 +92,5 @@ export class IngestionController {
         validated.idUtente = data.idUtente;
         validated.url = data.url;
         return validated;
-    }
-
-    private validateRepo(data: any): any {
-        return {
-            idUtente: Array.isArray(data.idUtente) ? data.idUtente : [data.idUtente],
-            url: data.url
-        };
     }
 }
