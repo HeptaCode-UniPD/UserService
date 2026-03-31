@@ -10,6 +10,7 @@ describe('RepoMapper', () => {
                 _id: '123',
                 idUtente: ['user1', 'user2'],
                 url: 'https://github.com/owner/repo',
+                name: 'nome-test',
                 pathStorage: 's3://bucket/123',
             };
 
@@ -25,8 +26,13 @@ describe('RepoMapper', () => {
 
     describe('toPersistence', () => {
         it('dovrebbe mappare correttamente RepoEntity → RepoPersistence', () => {
-            const entity = new RepoEntity('123', ['user1', 'user2'], 'https://github.com/owner/repo', 's3://bucket/123');
-
+            const entity = new RepoEntity(
+                '123', 
+                ['user1', 'user2'], 
+                'https://github.com/owner/repo', 
+                'nome-repo',         
+                's3://bucket/123'    
+            );
             const persistence = RepoMapper.toPersistence(entity);
 
             expect(persistence._id).toBe('123');

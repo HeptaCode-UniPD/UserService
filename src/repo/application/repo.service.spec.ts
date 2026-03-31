@@ -13,13 +13,14 @@ const mockRepoRepository = {
     save: jest.fn(),
     delete: jest.fn(),
     addUser: jest.fn(),
+    removeUser: jest.fn(),
 };
 
 const mockGithubService = {
     validate: jest.fn(),
 };
 
-const mockRepo = new RepoEntity('123', ['user1'], 'https://github.com/owner/repo', 's3://bucket/123');
+const mockRepo = new RepoEntity('123', ['user1'], 'https://github.com/owner/repo', 'repo', 's3://bucket/123');
 
 describe('RepoService', () => {
     let service: RepoService;
@@ -71,20 +72,31 @@ describe('RepoService', () => {
 
     describe('deleteRepo', () => {
         it('dovrebbe lanciare NotFoundException se repo non trovato', async () => {
-            mockRepoRepository.findByUrlAndUser.mockResolvedValue(null);
+            mockRepoRepository.findById.mockResolvedValue(null);
 
-            await expect(service.deleteRepo({ idUtente: 'user1', url: 'https://github.com/owner/repo' }))
+            await expect(service.deleteRepo('user1', '123'))
                 .rejects.toThrow(NotFoundException);
         });
 
-        it('dovrebbe eliminare repo se trovato', async () => {
-            mockRepoRepository.findByUrlAndUser.mockResolvedValue(mockRepo);
+        it('dovrebbe eliminare repo se era l\'unico utente', async () => {
+            mockRepoRepository.findById.mockResolvedValue(mockRepo); 
             mockRepoRepository.delete.mockResolvedValue(true);
 
-            const result = await service.deleteRepo({ idUtente: 'user1', url: 'https://github.com/owner/repo' });
+            const result = await service.deleteRepo('user1', '123');
 
             expect(mockRepoRepository.delete).toHaveBeenCalledWith('123');
             expect(result).toBe(true);
+        });
+
+        it('dovrebbe rimuovere solo utente se repo ha altri utenti', async () => {
+            const mockRepoMultiUser = new RepoEntity('123', ['user1', 'user2'], 'https://github.com/owner/repo', 'repo', 's3://bucket/123');
+            mockRepoRepository.findById.mockResolvedValue(mockRepoMultiUser);
+            mockRepoRepository.removeUser = jest.fn().mockResolvedValue(mockRepoMultiUser);
+
+            await service.deleteRepo('user1', '123');
+
+            expect(mockRepoRepository.removeUser).toHaveBeenCalledWith('123', 'user1');
+            expect(mockRepoRepository.delete).not.toHaveBeenCalled();
         });
     });
 });

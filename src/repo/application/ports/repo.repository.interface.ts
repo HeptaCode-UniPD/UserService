@@ -16,6 +16,7 @@ export interface IRepoRepository {
     // addUser() serve perchè così possiamo aggiungere un utente all'array collegato al repo
     addUser(repoId: string, idUtente: string): Promise<RepoEntity>;
     // update(repo: RepoEntity): Promise<RepoEntity>;
+    removeUser(repoId: string, idUtente: string): Promise<RepoEntity>;
 }
 
 export const REPO_REPOSITORY = Symbol('IRepoRepository');

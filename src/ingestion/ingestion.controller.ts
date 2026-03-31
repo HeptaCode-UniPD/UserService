@@ -5,7 +5,6 @@ import { UserDataDTO } from "./dto/user-data.dto";
 import { SaveRepoDto } from "./dto/save-repo.dto";
 import { ValidatedUserDataDTO } from "./dto/validated-user-data.dto";
 import { ValidatedSaveRepoDTO } from "./dto/validated-save-repo.dto";
-import { RepoEntity } from "../repo/domain/repo.entity";
 import { ApiOperation, ApiQuery } from "@nestjs/swagger";
 import { RepoResponseDto } from "./dto/repo-response.dto";
 import { AuthResponseDto } from "./dto/auth-response.dto";
@@ -72,14 +71,14 @@ export class IngestionController {
         await this.repoService.addRepo(validated);
     }
 
-    /*
+    
     @Delete('repo')
     @HttpCode(200)
-    async deleteRepo(@Body() body: SingleRepoDataDTO): Promise<void> {
+    async deleteRepo(@Body() body: SaveRepoDto): Promise<void> {
         const validated = this.validateRepo(body);
-        await this.repoService.deleteRepo(validated);
+        await this.repoService.deleteRepo(validated.idUtente[0], body.url); 
     }
-    */
+    
 
     private validateUser(data: UserDataDTO): ValidatedUserDataDTO {
         const validated = new ValidatedUserDataDTO();
@@ -93,5 +92,12 @@ export class IngestionController {
         validated.idUtente = data.idUtente;
         validated.url = data.url;
         return validated;
+    }
+
+    private validateRepo(data: any): any {
+        return {
+            idUtente: Array.isArray(data.idUtente) ? data.idUtente : [data.idUtente],
+            url: data.url
+        };
     }
 }

@@ -13,7 +13,7 @@ export class UserMongoRepository implements IUserRepository {
         private readonly model: Model<UserDocument>
     ) {}
 
-    async findById(id: String): Promise<UserEntity | null> {
+    async findById(id: string): Promise<UserEntity | null> {
         const doc = await this.model
             .findById(id)
             .select('+passwordHash')
@@ -22,7 +22,7 @@ export class UserMongoRepository implements IUserRepository {
         return doc ? UserMapper.toDomain(doc as UserPersistence) : null;
     }
     
-    async findByEmail(email: String): Promise<UserEntity | null> {
+    async findByEmail(email: string): Promise<UserEntity | null> {
         const doc = await this.model
             .findOne({ email })
             .select('+passwordHash')
@@ -33,9 +33,9 @@ export class UserMongoRepository implements IUserRepository {
     
     async save(user: UserEntity): Promise<UserEntity> {
         const created = await this.model.create(UserMapper.toPersistence(user));
-        return UserMapper.toDomain(created.toObject());
+        return UserMapper.toDomain(created.toObject() as UserPersistence);
     }
-
+    
     async existsByEmail(email: string): Promise<boolean> {
         const count = await this.model
             .countDocuments({email})

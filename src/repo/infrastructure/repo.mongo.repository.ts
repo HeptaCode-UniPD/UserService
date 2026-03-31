@@ -1,11 +1,10 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { IRepoRepository } from "../application/ports/repo.repository.interface";
 import { RepoEntity } from "../domain/repo.entity";
 import { InjectModel } from "@nestjs/mongoose";
 import { RepoDocument, RepoPersistence } from "./repo.schema";
 import { RepoMapper } from "./repo.mapper";
 import { Model } from "mongoose";
-import { NotFoundException } from "@nestjs/common";
 
 @Injectable()
 export class RepoMongoRepository implements IRepoRepository {
@@ -59,10 +58,23 @@ export class RepoMongoRepository implements IRepoRepository {
     }
 
     async addUser(repoId: string, idUtente: string): Promise<RepoEntity> {
+            const doc = await this.model
+                .findByIdAndUpdate(
+                    repoId,
+                    { $push: { idUtente: idUtente } },
+                    { new: true }
+                )
+                .lean()
+                .exec();
+            if (!doc) throw new NotFoundException("Repository non trovato");
+            return RepoMapper.toDomain(doc as RepoPersistence);
+        }
+
+        async removeUser(repoId: string, idUtente: string): Promise<RepoEntity> {
         const doc = await this.model
             .findByIdAndUpdate(
                 repoId,
-                { $push: { idUtente: idUtente } },
+                { $pull: { idUtente: idUtente } },
                 { new: true }
             )
             .lean()
@@ -70,5 +82,4 @@ export class RepoMongoRepository implements IRepoRepository {
         if (!doc) throw new NotFoundException("Repository non trovato");
         return RepoMapper.toDomain(doc as RepoPersistence);
     }
-    
 }

@@ -1,11 +1,9 @@
-import { Inject, Injectable, NotFoundException } from "@nestjs/common";
+import { Inject, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { UserEntity } from "../domain/user.entity";
 import { ValidatedUserDataDTO } from "../../ingestion/dto/validated-user-data.dto";
 import type { IUserRepository } from "./ports/user.repository.interface";
 import { USER_REPOSITORY } from "./ports/user.repository.interface";
 import bcrypt from 'bcrypt';
-import { ConflictException, UnauthorizedException } from "@nestjs/common";
-import { randomUUID } from 'crypto';
 
 @Injectable()
 export class UserService {
