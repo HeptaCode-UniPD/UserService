@@ -62,7 +62,7 @@ export class IngestionController {
         @Query('userId') userId: string,
     ): Promise<RepoResponseDto[]> {
         const repos = await this.repoService.listForUser(userId);
-        return repos.map(RepoResponseDto.fromDomain);
+        return repos.map(repo => RepoResponseDto.fromDomain(repo));
     }
 
     @Post('repo')

@@ -4,16 +4,12 @@ import { IngestionModule } from './ingestion/ingestion.module';
 import { RepoModule } from './repo/repo.module';
 
 @Module({
-  imports: [
-    // mi manca il nome del db guys quando arriva va aggiornato
-    
+  imports: [    
     MongooseModule.forRoot(process.env.MONGO_URI!, {
-      connectionFactory: (connection) => {
-        console.log('✅ MongoDB connesso a:', connection.host, '/', connection.name);
-        return connection;
+      connectionFactory: (connection: unknown) => {
+          return connection;
       }
     }),
-
     IngestionModule,
     RepoModule,
   ],

@@ -1,8 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from './user.service';
 import { USER_REPOSITORY } from './ports/user.repository.interface';
-import { ConflictException, UnauthorizedException } from '@nestjs/common';
-import { UserEntity } from '../domain/user.entity';
+import { UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
 const mockUserRepository = {
