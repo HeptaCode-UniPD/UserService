@@ -24,14 +24,14 @@ export class RepoService {
     async addRepo(data: ValidatedSaveRepoDTO): Promise<RepoEntity> {
         const repoData = await this.githubService.validate(data.url);
         if (!repoData) {
-            throw new BadRequestException("Repository GitHub non valido o non esistente");
+            throw new BadRequestException("Repository privato o URL invalido.");
         }
 
         const existing = await this.repoRepository.findByUrl(data.url);
         if (existing) {
-            // ✅ controlla se l'utente ha già questo repo
+            // controlla se l'utente ha già questo repo
             if (existing.idUtente.includes(data.idUtente)) {
-                throw new ConflictException("Repository già presente per questo utente");
+                throw new ConflictException("Repository già presente per questo utente.");
             }
             return this.repoRepository.addUser(existing.id, data.idUtente);
         }
