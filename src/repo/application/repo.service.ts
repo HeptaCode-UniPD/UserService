@@ -1,4 +1,4 @@
-import { Inject, Injectable, BadRequestException, NotFoundException } from "@nestjs/common";
+import { Inject, Injectable, BadRequestException, NotFoundException, ConflictException } from "@nestjs/common";
 import { RepoEntity } from "../domain/repo.entity";
 import { ValidatedSaveRepoDTO } from "../../ingestion/dto/validated-save-repo.dto";
 import type { IRepoRepository } from "./ports/repo.repository.interface";
@@ -29,6 +29,10 @@ export class RepoService {
 
         const existing = await this.repoRepository.findByUrl(data.url);
         if (existing) {
+            // ✅ controlla se l'utente ha già questo repo
+            if (existing.idUtente.includes(data.idUtente)) {
+                throw new ConflictException("Repository già presente per questo utente");
+            }
             return this.repoRepository.addUser(existing.id, data.idUtente);
         }
 
@@ -40,7 +44,6 @@ export class RepoService {
             repoData.name,
             `s3://your-bucket/${repoId}`
         );
-
         return this.repoRepository.save(repo);
     }
 
