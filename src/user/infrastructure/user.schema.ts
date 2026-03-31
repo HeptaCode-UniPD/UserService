@@ -2,9 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 @Schema({collection: 'users', timestamps: true, versionKey: false})
-export class UserPersistence {
-    @Prop({ required: true, type: String })
-    _id!: string;
+export class UserPersistence extends Document{
 
     @Prop({ required: true })
     nome!: string;
