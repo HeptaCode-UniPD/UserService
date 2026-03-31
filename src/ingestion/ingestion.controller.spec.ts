@@ -87,7 +87,7 @@ describe('IngestionController', () => {
             await controller.deleteRepo(dto);
 
             expect(mockRepoService.deleteRepo).toHaveBeenCalledWith(
-                dto.idUtente, 
+                dto.idUtente, // Qui il controller estrae la stringa dal DTO/Validated
                 dto.url
             );
         });

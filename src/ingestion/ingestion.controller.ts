@@ -76,7 +76,7 @@ export class IngestionController {
     @HttpCode(200)
     async deleteRepo(@Body() body: SaveRepoDto): Promise<void> {
         const validated = this.validateRepo(body);
-        await this.repoService.deleteRepo(validated.idUtente[0], body.url); 
+        await this.repoService.deleteRepo(validated.idUtente[0], validated.url); 
     }
     
 
