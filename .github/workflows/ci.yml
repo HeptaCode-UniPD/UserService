@@ -4,7 +4,6 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
-
 jobs:
   verification:
     name: 'Static and Dynamic Analysis'
@@ -17,38 +16,27 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: '20'
           cache: 'npm'
-
       - name: Install dependencies
         run: npm ci
-
+      - name: Wait for MongoDB
+        run: npx wait-on tcp:27017
       - name: 1. Analisi Statica (ESLint & Prettier)
         run: npm run lint
-
       - name: 2. Analisi Dinamica e Test di Unità
         run: npm run test:cov
-
       - name: 3. Test di Integrazione (e2e)
         run: npm run test:e2e
         env:
           MONGO_URI: mongodb://localhost:27017/test-e2e-db
-
       - name: 4. Verifica Integrità Build
         run: npm run build
-
       - name: Upload coverage
         uses: actions/upload-artifact@v4
-        with:
-          name: coverage
-          path: coverage
-
-      - name: Download coverage
-        uses: actions/download-artifact@v4
         with:
           name: coverage
           path: coverage
