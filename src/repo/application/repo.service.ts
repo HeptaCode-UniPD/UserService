@@ -1,6 +1,6 @@
 import { Inject, Injectable, BadRequestException, NotFoundException, ConflictException } from "@nestjs/common";
 import { RepoEntity } from "../domain/repo.entity";
-import { ValidatedSaveRepoDTO } from "../../ingestion/dto/validated-save-repo.dto";
+import { ValidatedSaveRepoDTO } from "./dto/validated-save-repo.dto";
 import type { IRepoRepository } from "./ports/repo.repository.interface";
 import { REPO_REPOSITORY } from "./ports/repo.repository.interface";
 import type { GitHubServiceInterface } from "./ports/github.service.interface";

@@ -1,6 +1,6 @@
 import { Inject, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { UserEntity } from "../domain/user.entity";
-import { ValidatedUserDataDTO } from "../../ingestion/dto/validated-user-data.dto";
+import { ValidatedUserDataDTO } from "./dto/validated-user-data.dto";
 import type { IUserRepository } from "./ports/user.repository.interface";
 import { USER_REPOSITORY } from "./ports/user.repository.interface";
 import * as bcrypt from 'bcrypt';
