@@ -19,4 +19,4 @@ RUN npm run build
 EXPOSE 3000
 
 # Default command
-CMD ["node", "dist/src/main"]
+CMD ["node", "dist/main"]
