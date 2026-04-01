@@ -80,17 +80,17 @@ export class IngestionController {
         await this.repoService.deleteRepo(body.idUtente, body.idRepo); 
     }
 
-    @Get(':id')
+    @Get('repo')
     @ApiOperation({ summary: 'Get a specific repository by ID' })
     @ApiQuery({
-        name: 'id',
+        name: 'repoId',
         required: true,
         description: 'The unique identifier of the repository',
     })
     async getById(
-        @Query('id') id: string,
+        @Query('repoId') repoId: string,
     ): Promise<RepoResponseDto> {
-        const repo = await this.repoService.getRepoById(id);
+        const repo = await this.repoService.getRepoById(repoId);
         return RepoResponseDto.fromDomain(repo);
     }
     
