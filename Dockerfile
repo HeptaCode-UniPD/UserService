@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 3000
 
 # Default command
-CMD ["npm", "test", "start:prod"]
+CMD ["node", "dist/main"]
