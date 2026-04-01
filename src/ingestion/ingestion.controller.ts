@@ -6,7 +6,7 @@ import { SaveRepoDto } from "./dto/save-repo.dto";
 import { DeleteRepoDto } from './dto/delete-repo.dto';
 import { ValidatedUserDataDTO } from "../user/application/dto/validated-user-data.dto";
 import { ValidatedSaveRepoDTO } from "../repo/application/dto/validated-save-repo.dto";
-import { ApiOperation, ApiQuery } from "@nestjs/swagger";
+import { ApiOperation, ApiQuery} from "@nestjs/swagger";
 import { RepoResponseDto } from "./dto/repo-response.dto";
 import { AuthResponseDto } from "./dto/auth-response.dto";
 import { UserResponseDTO } from "./dto/user-response.dto";
@@ -78,6 +78,20 @@ export class IngestionController {
     @HttpCode(200)
     async deleteRepo(@Body() body: DeleteRepoDto): Promise<void> {
         await this.repoService.deleteRepo(body.idUtente, body.idRepo); 
+    }
+
+    @Get(':id')
+    @ApiOperation({ summary: 'Get a specific repository by ID' })
+    @ApiQuery({
+        name: 'id',
+        required: true,
+        description: 'The unique identifier of the repository',
+    })
+    async getById(
+        @Query('id') id: string,
+    ): Promise<RepoResponseDto> {
+        const repo = await this.repoService.getRepoById(id);
+        return RepoResponseDto.fromDomain(repo);
     }
     
 

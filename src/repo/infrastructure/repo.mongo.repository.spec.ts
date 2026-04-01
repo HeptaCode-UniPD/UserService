@@ -8,11 +8,13 @@ const mockRepoDoc = {
     _id: '123',
     idUtente: ['user1'],
     url: 'https://github.com/owner/repo',
+    name: 'repo',
     pathStorage: 's3://bucket/123',
     toObject: jest.fn().mockReturnValue({
         _id: '123',
         idUtente: ['user1'],
         url: 'https://github.com/owner/repo',
+        name: 'repo',
         pathStorage: 's3://bucket/123',
     })
 };
@@ -96,7 +98,7 @@ describe('RepoMongoRepository', () => {
             expect(result).toHaveLength(0);
         });
     });
-    
+
     describe('findByUrl', () => {
         it('dovrebbe restituire RepoEntity se trovato', async () => {
             mockModel.findOne.mockReturnValue({
@@ -123,7 +125,7 @@ describe('RepoMongoRepository', () => {
         it('dovrebbe salvare e restituire RepoEntity', async () => {
             mockModel.create.mockResolvedValue(mockRepoDoc);
 
-            const entity = new RepoEntity('123', ['user1'], 'https://github.com/owner/repo', 's3://bucket/123');
+            const entity = new RepoEntity('123', ['user1'], 'https://github.com/owner/repo', 'repo', 's3://bucket/123');
             const result = await repository.save(entity);
 
             expect(mockModel.create).toHaveBeenCalled();
@@ -153,7 +155,11 @@ describe('RepoMongoRepository', () => {
 
     describe('addUser', () => {
         it('dovrebbe aggiungere utente e restituire RepoEntity aggiornata', async () => {
-            const updatedDoc = { ...mockRepoDoc, idUtente: ['user1', 'user2'], toObject: jest.fn().mockReturnValue({ ...mockRepoDoc, idUtente: ['user1', 'user2'] }) };
+            const updatedDoc = {
+                ...mockRepoDoc,
+                idUtente: ['user1', 'user2'],
+                toObject: jest.fn().mockReturnValue({ ...mockRepoDoc, idUtente: ['user1', 'user2'] })
+            };
             mockModel.findByIdAndUpdate.mockReturnValue({
                 lean: jest.fn().mockReturnThis(),
                 exec: jest.fn().mockResolvedValue(updatedDoc),

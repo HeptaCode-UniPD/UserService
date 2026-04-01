@@ -99,4 +99,24 @@ describe('RepoService', () => {
             expect(mockRepoRepository.delete).not.toHaveBeenCalled();
         });
     });
+
+    describe('getRepoById', () => {
+        it('should return a repo if found', async () => {
+        mockRepoRepository.findById.mockResolvedValue(mockRepoRepository);
+
+        const result = await service.getRepoById('123');
+
+        expect(mockRepoRepository.findById).toHaveBeenCalledWith('123');
+        expect(result).toEqual(mockRepoRepository);
+        });
+
+        it('should throw a NotFoundException if repo is not found', async () => {
+        mockRepoRepository.findById.mockResolvedValue(null);
+
+        await expect(service.getRepoById('non-existent')).rejects.toThrow(
+            NotFoundException,
+        );
+        expect(mockRepoRepository.findById).toHaveBeenCalledWith('non-existent');
+        });
+    });
 });

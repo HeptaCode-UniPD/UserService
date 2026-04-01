@@ -61,4 +61,12 @@ export class RepoService {
         }
         return this.repoRepository.delete(repo.id);
     }
+
+    async getRepoById(idRepo: string): Promise<RepoEntity> {
+        const repo = await this.repoRepository.findById(idRepo);
+        if (!repo) {
+            throw new NotFoundException("Repository non trovato");
+        }
+        return repo;
+    }
 }
