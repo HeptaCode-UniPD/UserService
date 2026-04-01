@@ -13,8 +13,8 @@ RUN npm install
 # Copy all source code
 COPY . .
 
-# Expose port (optional for tests)
+# Expose port
 EXPOSE 3000
 
-# Default command (can be overridden)
-CMD ["npm", "test"]
+# Default command
+CMD ["npm", "test", "start:prod"]
