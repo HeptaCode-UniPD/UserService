@@ -3,7 +3,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { UserEntity } from "./../domain/user.entity";
 import { UserMapper } from "./user.mapper";
-import { IUserRepository } from "./../application/ports/user.repository.interface";
+import { IUserRepository } from "../application/interfaces/user.repository.interface";
 import { UserPersistence, UserDocument } from "./user.schema";
 
 @Injectable()

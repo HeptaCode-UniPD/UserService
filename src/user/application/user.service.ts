@@ -1,39 +1,21 @@
 import { Inject, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { UserEntity } from "../domain/user.entity";
 import { ValidatedUserDataDTO } from "./dto/validated-user-data.dto";
-import type { IUserRepository } from "./ports/user.repository.interface";
-import { USER_REPOSITORY } from "./ports/user.repository.interface";
+import type { IUserRepository } from "./interfaces/user.repository.interface";
+import { USER_REPOSITORY } from "./interfaces/user.repository.interface";
+import { UserServiceLayerInterface } from "./interfaces/user.service.interface";
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
-export class UserService {
+export class UserService implements UserServiceLayerInterface {
     constructor(
         @Inject(USER_REPOSITORY)
         private readonly userRepository: IUserRepository
     ) {}
 
-    /*
-    async register(data: ValidatedUserDataDTO): Promise<UserEntity> {
-        const exists = await this.userRepository.existsByEmail(data.email);
-        if (exists) {
-            throw new ConflictException("User already exists");        
-        }
-
-        const passwordHash = (await (bcrypt as any).hash(data.password, 10)) as string;
-        const user = new UserEntity(
-            randomUUID(),
-            data.email,
-            passwordHash
-        );
-        return this.userRepository.save(user);
-    }
-    */
-
     async getUser(userId: string): Promise<UserEntity> {
         const user = await this.userRepository.findById(userId);
-
-        if(!user) { throw new NotFoundException("User not found"); }
-
+        if (!user) { throw new NotFoundException("User not found"); }
         return user;
     }
 
@@ -42,10 +24,8 @@ export class UserService {
         if (!user) {
             throw new UnauthorizedException("Invalid credentials");
         }
-        
         const isValid = await bcrypt.compare(data.password, user.passwordHash);
         if (!isValid) throw new UnauthorizedException("Invalid credentials");
-
         return user;
     }
 }

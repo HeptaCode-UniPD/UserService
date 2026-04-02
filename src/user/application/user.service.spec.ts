@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from './user.service';
-import { USER_REPOSITORY } from './ports/user.repository.interface';
+import { USER_REPOSITORY } from './interfaces/user.repository.interface';
 import { UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 

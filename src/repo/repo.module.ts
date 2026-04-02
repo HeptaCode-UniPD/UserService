@@ -3,9 +3,9 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { RepoPersistence, RepoSchema } from "./infrastructure/repo.schema";
 import { RepoMongoRepository } from "./infrastructure/repo.mongo.repository";
 import { RepoService } from "./application/repo.service";
-import { REPO_REPOSITORY } from "./application/ports/repo.repository.interface";
+import { REPO_REPOSITORY } from "./application/interfaces/repo.repository.interface";
 import { GitHubAdapter } from "./infrastructure/github.adapter";
-import { GITHUB_SERVICE } from "./application/ports/github.service.interface";
+import { GITHUB_SERVICE } from "./application/interfaces/github.service.interface";
 
 @Module({
     imports: [

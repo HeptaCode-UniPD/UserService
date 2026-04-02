@@ -3,7 +3,7 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { UserPersistence, UserSchema } from "./infrastructure/user.schema";
 import { UserMongoRepository } from "./infrastructure/user.mongo.repository";
 import { UserService } from "./application/user.service";
-import { USER_REPOSITORY } from "./application/ports/user.repository.interface";
+import { USER_REPOSITORY } from "./application/interfaces/user.repository.interface";
 
 @Module({
     imports: [

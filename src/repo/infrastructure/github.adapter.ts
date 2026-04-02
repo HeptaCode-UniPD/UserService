@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { GitHubServiceInterface } from "../application/ports/github.service.interface";
+import { GitHubServiceInterface } from "../application/interfaces/github.service.interface";
 
 export interface GitHubRepoData {
   name: string;

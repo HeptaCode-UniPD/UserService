@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { IRepoRepository } from "../application/ports/repo.repository.interface";
+import { IRepoRepository } from "../application/interfaces/repo.repository.interface";
 import { RepoEntity } from "../domain/repo.entity";
 import { InjectModel } from "@nestjs/mongoose";
 import { RepoDocument, RepoPersistence } from "./repo.schema";

@@ -10,22 +10,14 @@ import { ApiOperation, ApiQuery} from "@nestjs/swagger";
 import { RepoResponseDto } from "./dto/repo-response.dto";
 import { AuthResponseDto } from "./dto/auth-response.dto";
 import { UserResponseDTO } from "./dto/user-response.dto";
+import { IngestionInterface } from "./interfaces/ingestion.interface";
 
 @Controller()
-export class IngestionController {
+export class IngestionController implements IngestionInterface {
     constructor(
         private readonly userService: UserService,
         private readonly repoService: RepoService,
     ) {}
-
-    /*
-    @Post('auth/register')
-    @ApiOperation({ summary: 'Register a new user' })
-    async register(@Body() body: UserDataDTO): Promise<void> {
-        const validated = this.validateUser(body);
-        await this.userService.register(validated);
-    }
-    */
 
     @Get('profile')
     @ApiOperation({ summary: 'Information about the user'})
@@ -40,7 +32,6 @@ export class IngestionController {
         const user = await this.userService.getUser(userId);
         return UserResponseDTO.fromDomain(user);
     }
-
 
     @Post('auth/login')
     @HttpCode(200)
@@ -73,11 +64,10 @@ export class IngestionController {
         return { id: repo.id };
     }
 
-    
     @Delete('repo')
     @HttpCode(200)
     async deleteRepo(@Body() body: DeleteRepoDto): Promise<void> {
-        await this.repoService.deleteRepo(body.idUtente, body.idRepo); 
+        await this.repoService.deleteRepo(body.idUtente, body.idRepo);
     }
 
     @Get(':id')
@@ -93,16 +83,15 @@ export class IngestionController {
         const repo = await this.repoService.getRepoById(id);
         return RepoResponseDto.fromDomain(repo);
     }
-    
 
-    private validateUser(data: UserDataDTO): ValidatedUserDataDTO {
+    validateUser(data: UserDataDTO): ValidatedUserDataDTO {
         const validated = new ValidatedUserDataDTO();
         validated.email = data.email;
         validated.password = data.password;
         return validated;
     }
 
-    private validateSaveRepo(data: SaveRepoDto): ValidatedSaveRepoDTO {
+    validateSaveRepo(data: SaveRepoDto): ValidatedSaveRepoDTO {
         const validated = new ValidatedSaveRepoDTO();
         validated.idUtente = data.idUtente;
         validated.url = data.url;

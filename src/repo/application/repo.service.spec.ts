@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { RepoService } from './repo.service';
-import { REPO_REPOSITORY } from './ports/repo.repository.interface';
-import { GITHUB_SERVICE } from './ports/github.service.interface';
+import { REPO_REPOSITORY } from './interfaces/repo.repository.interface';
+import { GITHUB_SERVICE } from './interfaces/github.service.interface';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { RepoEntity } from '../domain/repo.entity';
 

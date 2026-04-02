@@ -1,4 +1,4 @@
-import { RepoEntity } from "../../../repo/domain/repo.entity";
+import { RepoEntity } from "../../domain/repo.entity";
 
 
 export interface IRepoRepository {

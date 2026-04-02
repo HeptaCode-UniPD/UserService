@@ -1,14 +1,15 @@
 import { Inject, Injectable, BadRequestException, NotFoundException, ConflictException } from "@nestjs/common";
 import { RepoEntity } from "../domain/repo.entity";
 import { ValidatedSaveRepoDTO } from "./dto/validated-save-repo.dto";
-import type { IRepoRepository } from "./ports/repo.repository.interface";
-import { REPO_REPOSITORY } from "./ports/repo.repository.interface";
-import type { GitHubServiceInterface } from "./ports/github.service.interface";
-import { GITHUB_SERVICE } from "./ports/github.service.interface";
+import type { IRepoRepository } from "./interfaces/repo.repository.interface";
+import { REPO_REPOSITORY } from "./interfaces/repo.repository.interface";
+import type { GitHubServiceInterface } from "./interfaces/github.service.interface";
+import { GITHUB_SERVICE } from "./interfaces/github.service.interface";
+import { RepoServiceLayerInterface } from "./interfaces/repo.service.interface";
 import { randomUUID } from 'node:crypto';
 
 @Injectable()
-export class RepoService {
+export class RepoService implements RepoServiceLayerInterface {
     constructor(
         @Inject(REPO_REPOSITORY)
         private readonly repoRepository: IRepoRepository,
@@ -16,9 +17,8 @@ export class RepoService {
         private readonly githubService: GitHubServiceInterface,
     ) {}
 
-    async listForUser(userId: string) : Promise<RepoEntity[]> {
-        const repos = await this.repoRepository.findByUserId(userId);
-        return repos;
+    async listForUser(userId: string): Promise<RepoEntity[]> {
+        return this.repoRepository.findByUserId(userId);
     }
 
     async addRepo(data: ValidatedSaveRepoDTO): Promise<RepoEntity> {
@@ -26,16 +26,13 @@ export class RepoService {
         if (!repoData) {
             throw new BadRequestException("Repository privato o URL invalido.");
         }
-
         const existing = await this.repoRepository.findByUrl(data.url);
         if (existing) {
-            // controlla se l'utente ha già questo repo
             if (existing.idUtente.includes(data.idUtente)) {
                 throw new ConflictException("Repository già presente per questo utente.");
             }
             return this.repoRepository.addUser(existing.id, data.idUtente);
         }
-
         const repoId = randomUUID();
         const repo = new RepoEntity(
             repoId,
