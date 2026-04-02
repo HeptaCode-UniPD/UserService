@@ -1,5 +1,5 @@
 # Use official Node image
-FROM node:18
+FROM node:18-alpine
 
 # Create app directory
 WORKDIR /app
@@ -13,8 +13,10 @@ RUN npm install
 # Copy all source code
 COPY . .
 
-# Expose port (optional for tests)
+RUN npm run build
+
+# Expose port
 EXPOSE 3000
 
-# Default command (can be overridden)
-CMD ["npm", "test"]
+# Default command
+CMD ["node", "dist/main"]
