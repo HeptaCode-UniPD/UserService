@@ -6,6 +6,7 @@ import { SaveRepoDto } from "./dto/save-repo.dto";
 import { DeleteRepoDto } from './dto/delete-repo.dto';
 import { ValidatedUserDataDTO } from "../user/application/dto/validated-user-data.dto";
 import { ValidatedSaveRepoDTO } from "../repo/application/dto/validated-save-repo.dto";
+import { ValidatedDeleteRepoDTO } from "../repo/application/dto/validated-delete-repo.dto";
 import { ApiOperation, ApiQuery} from "@nestjs/swagger";
 import { RepoResponseDto } from "./dto/repo-response.dto";
 import { AuthResponseDto } from "./dto/auth-response.dto";
@@ -67,7 +68,8 @@ export class IngestionController implements IngestionInterface {
     @Delete('repo')
     @HttpCode(200)
     async deleteRepo(@Body() body: DeleteRepoDto): Promise<void> {
-        await this.repoService.deleteRepo(body.idUtente, body.idRepo);
+        const validated = this.validateDeleteRepo(body);
+        await this.repoService.deleteRepo(validated);
     }
 
     @Get('repo')
@@ -95,6 +97,13 @@ export class IngestionController implements IngestionInterface {
         const validated = new ValidatedSaveRepoDTO();
         validated.idUtente = data.idUtente;
         validated.url = data.url;
+        return validated;
+    }
+
+    validateDeleteRepo(data: DeleteRepoDto): ValidatedDeleteRepoDTO {
+        const validated = new ValidatedDeleteRepoDTO();
+        validated.idUtente = data.idUtente;
+        validated.idRepo = data.idRepo;
         return validated;
     }
 }

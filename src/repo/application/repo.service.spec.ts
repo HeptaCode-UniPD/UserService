@@ -73,17 +73,14 @@ describe('RepoService', () => {
     describe('deleteRepo', () => {
         it('dovrebbe lanciare NotFoundException se repo non trovato', async () => {
             mockRepoRepository.findById.mockResolvedValue(null);
-
-            await expect(service.deleteRepo('user1', '123'))
+            await expect(service.deleteRepo({ idUtente: 'user1', idRepo: '123' }))
                 .rejects.toThrow(NotFoundException);
         });
 
         it('dovrebbe eliminare repo se era l\'unico utente', async () => {
-            mockRepoRepository.findById.mockResolvedValue(mockRepo); 
+            mockRepoRepository.findById.mockResolvedValue(mockRepo);
             mockRepoRepository.delete.mockResolvedValue(true);
-
-            const result = await service.deleteRepo('user1', '123');
-
+            const result = await service.deleteRepo({ idUtente: 'user1', idRepo: '123' });
             expect(mockRepoRepository.delete).toHaveBeenCalledWith('123');
             expect(result).toBe(true);
         });
@@ -92,9 +89,7 @@ describe('RepoService', () => {
             const mockRepoMultiUser = new RepoEntity('123', ['user1', 'user2'], 'https://github.com/owner/repo', 'repo', 's3://bucket/123');
             mockRepoRepository.findById.mockResolvedValue(mockRepoMultiUser);
             mockRepoRepository.removeUser = jest.fn().mockResolvedValue(mockRepoMultiUser);
-
-            await service.deleteRepo('user1', '123');
-
+            await service.deleteRepo({ idUtente: 'user1', idRepo: '123' });
             expect(mockRepoRepository.removeUser).toHaveBeenCalledWith('123', 'user1');
             expect(mockRepoRepository.delete).not.toHaveBeenCalled();
         });

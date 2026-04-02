@@ -1,6 +1,7 @@
 import { Inject, Injectable, BadRequestException, NotFoundException, ConflictException } from "@nestjs/common";
 import { RepoEntity } from "../domain/repo.entity";
 import { ValidatedSaveRepoDTO } from "./dto/validated-save-repo.dto";
+import { ValidatedDeleteRepoDTO } from "./dto/validated-delete-repo.dto";
 import type { IRepoRepository } from "./interfaces/repo.repository.interface";
 import { REPO_REPOSITORY } from "./interfaces/repo.repository.interface";
 import type { GitHubServiceInterface } from "./interfaces/github.service.interface";
@@ -44,16 +45,16 @@ export class RepoService implements RepoServiceLayerInterface {
         return this.repoRepository.save(repo);
     }
 
-    async deleteRepo(idUtente: string, idRepo: string): Promise<boolean> {
-        const repo = await this.repoRepository.findById(idRepo);
+    async deleteRepo(data: ValidatedDeleteRepoDTO): Promise<boolean> {
+        const repo = await this.repoRepository.findById(data.idRepo);
         if (!repo) {
             throw new NotFoundException("Repository non trovato");
         }
-        if (!repo.idUtente.includes(idUtente)) {
+        if (!repo.idUtente.includes(data.idUtente)) {
             throw new NotFoundException("Repository non trovato per questo utente");
         }
         if (repo.idUtente.length > 1) {
-            await this.repoRepository.removeUser(repo.id, idUtente);
+            await this.repoRepository.removeUser(repo.id, data.idUtente);
             return true;
         }
         return this.repoRepository.delete(repo.id);

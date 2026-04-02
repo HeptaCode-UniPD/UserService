@@ -4,6 +4,7 @@ import { UserService } from '../user/application/user.service';
 import { RepoService } from '../repo/application/repo.service';
 import { UserEntity } from '../user/domain/user.entity';
 import { RepoEntity } from '../repo/domain/repo.entity';
+import { DeleteRepoDto } from './dto/delete-repo.dto';
 
 const mockUserService = {
     getUser: jest.fn(),
@@ -88,13 +89,13 @@ describe('IngestionController', () => {
     });
 
     describe('deleteRepo', () => {
-        it('dovrebbe chiamare repoService.deleteRepo con idUtente e idRepo corretti', async () => {
-            const dto = { idUtente: 'user1', idRepo: 'repo1' };
+        it('dovrebbe chiamare repoService.deleteRepo con ValidatedDeleteRepoDTO corretto', async () => {
+            const dto: DeleteRepoDto = { idUtente: 'user1', idRepo: 'repo1' };
             mockRepoService.deleteRepo.mockResolvedValue(undefined);
-
             await controller.deleteRepo(dto);
-
-            expect(mockRepoService.deleteRepo).toHaveBeenCalledWith(dto.idUtente, dto.idRepo);
+            expect(mockRepoService.deleteRepo).toHaveBeenCalledWith(
+                expect.objectContaining({ idUtente: 'user1', idRepo: 'repo1' })
+            );
         });
     });
 });
