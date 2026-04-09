@@ -4,15 +4,15 @@ import { UserEntity } from '../../user/domain/user.entity';
 
 export class UserResponseDTO {
 
-    @ApiProperty({ example: 'Mario' })
+    @ApiProperty({ description: 'User first name', example: 'Mario' })
     @IsString()
     nome!: string;
     
-    @ApiProperty({ example: 'Rossi' })
+    @ApiProperty({ description: 'User last name', example: 'Rossi' })
     @IsString()
     cognome!: string;
 
-    @ApiProperty({ example: 'user@example.com' })
+    @ApiProperty({ description: 'User email address', example: 'user@example.com' })
     @IsEmail()
     email!: string;
 

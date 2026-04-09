@@ -16,9 +16,10 @@ async function bootstrap() {
   );
 
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('User Service API')
-    .setDescription('User identity and repository metadata')
-    .setVersion('1.0')
+    .setTitle('Auth & Repo Service API')
+    .setDescription('Service for managing user identities, authentication, and repository metadata ingestion.')
+    .setVersion('1.0.0')
+    .addTag('Ingestion', 'Endpoints for user and repository data management')
     .build();
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);

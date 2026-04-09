@@ -60,6 +60,19 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
+## API Documentation
+
+The microservice includes interactive API documentation powered by Swagger.
+
+### Accessing Swagger UI
+Once the application is running, you can access the documentation at:
+- **Local URL**: [http://localhost:3000/api/docs](http://localhost:3000/api/docs)
+
+The Swagger UI provides:
+- A list of all available endpoints.
+- Detailed request and response schemas.
+- The ability to "Try it out" and execute requests directly from the browser.
+
 ## Deployment
 
 When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
