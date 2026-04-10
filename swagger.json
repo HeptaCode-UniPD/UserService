@@ -1,0 +1,350 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/profile": {
+      "get": {
+        "operationId": "IngestionController_profile",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "query",
+            "description": "User id returned from login",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return user profile information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponseDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found"
+          }
+        },
+        "summary": "Get user profile",
+        "tags": [
+          "Ingestion"
+        ]
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "operationId": "IngestionController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserDataDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "summary": "Login — returns user id for subsequent requests",
+        "tags": [
+          "Ingestion"
+        ]
+      }
+    },
+    "/repos": {
+      "get": {
+        "operationId": "IngestionController_list",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "query",
+            "description": "User id returned from login",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return list of repositories",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RepoResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "List all repos for a user",
+        "tags": [
+          "Ingestion"
+        ]
+      }
+    },
+    "/repo": {
+      "post": {
+        "operationId": "IngestionController_addRepo",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveRepoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Repository saved successfully"
+          },
+          "400": {
+            "description": "Invalid repository data"
+          }
+        },
+        "summary": "Save a new repo entry",
+        "tags": [
+          "Ingestion"
+        ]
+      },
+      "delete": {
+        "operationId": "IngestionController_deleteRepo",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteRepoDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Repository deleted successfully"
+          },
+          "404": {
+            "description": "Repository or User not found"
+          }
+        },
+        "summary": "Delete a repository entry",
+        "tags": [
+          "Ingestion"
+        ]
+      },
+      "get": {
+        "operationId": "IngestionController_getById",
+        "parameters": [
+          {
+            "name": "repoId",
+            "required": true,
+            "in": "query",
+            "description": "The unique identifier of the repository",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return repository details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RepoResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Repository not found"
+          }
+        },
+        "summary": "Get a specific repository by ID",
+        "tags": [
+          "Ingestion"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Auth & Repo Service API",
+    "description": "Service for managing user identities, authentication, and repository metadata ingestion.",
+    "version": "1.0.0",
+    "contact": {}
+  },
+  "tags": [
+    {
+      "name": "Ingestion",
+      "description": "Endpoints for user and repository data management"
+    }
+  ],
+  "servers": [],
+  "components": {
+    "schemas": {
+      "UserResponseDTO": {
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string",
+            "description": "User first name",
+            "example": "Mario"
+          },
+          "cognome": {
+            "type": "string",
+            "description": "User last name",
+            "example": "Rossi"
+          },
+          "email": {
+            "type": "string",
+            "description": "User email address",
+            "example": "user@example.com"
+          }
+        },
+        "required": [
+          "nome",
+          "cognome",
+          "email"
+        ]
+      },
+      "UserDataDTO": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "The email address of the user",
+            "example": "user@example.com"
+          },
+          "password": {
+            "type": "string",
+            "description": "The user password (minimum 8 characters)",
+            "example": "strongpassword",
+            "minLength": 8
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "AuthResponseDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "Authenticated user id"
+          },
+          "email": {
+            "type": "string",
+            "description": "Authenticated user email"
+          }
+        },
+        "required": [
+          "userId",
+          "email"
+        ]
+      },
+      "RepoResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique identifier of the repository",
+            "example": "repo-456"
+          },
+          "idUtente": {
+            "description": "List of user IDs associated with this repository",
+            "example": [
+              "user-123"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "url": {
+            "type": "string",
+            "description": "The URL of the repository",
+            "example": "https://github.com/org/repo"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the repository",
+            "example": "my-project"
+          }
+        },
+        "required": [
+          "id",
+          "idUtente",
+          "url",
+          "name"
+        ]
+      },
+      "SaveRepoDto": {
+        "type": "object",
+        "properties": {
+          "idUtente": {
+            "type": "string",
+            "description": "The unique identifier of the user who owns the repository",
+            "example": "user-123"
+          },
+          "url": {
+            "type": "string",
+            "description": "The GitHub URL of the repository",
+            "example": "https://github.com/org/repo"
+          }
+        },
+        "required": [
+          "idUtente",
+          "url"
+        ]
+      },
+      "DeleteRepoDto": {
+        "type": "object",
+        "properties": {
+          "idUtente": {
+            "type": "string",
+            "description": "The unique identifier of the user",
+            "example": "user-123"
+          },
+          "idRepo": {
+            "type": "string",
+            "description": "The unique identifier of the repository to delete",
+            "example": "repo-456"
+          }
+        },
+        "required": [
+          "idUtente",
+          "idRepo"
+        ]
+      }
+    }
+  }
+}
